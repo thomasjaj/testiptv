@@ -260,6 +260,9 @@ async def get_app_settings():
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Settings not found"
             )
+        # Convert ObjectId to string to make it JSON serializable
+        if "_id" in settings:
+            settings["_id"] = str(settings["_id"])
         return settings
     except HTTPException:
         raise
