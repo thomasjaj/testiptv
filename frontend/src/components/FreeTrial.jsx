@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { useTrialSignup } from '../hooks/useApi';
 
 const FreeTrial = ({ trial }) => {
   const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { createTrial, loading, error, success } = useTrialSignup();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    // Mock submission delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    alert(`Free trial activated for ${email}! Check your email for login credentials. (This is a mock activation)`);
-    setEmail('');
-    setIsSubmitting(false);
+    try {
+      const result = await createTrial(email);
+      alert(result.message);
+      setEmail('');
+    } catch (err) {
+      console.error('Trial signup failed:', err);
+      // Error is already handled by the hook
+    }
   };
 
   return (
@@ -63,12 +65,26 @@ const FreeTrial = ({ trial }) => {
                   />
                 </div>
 
+                {/* Error Message */}
+                {error && (
+                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+                    <p className="text-red-200 text-sm">{error}</p>
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {success && (
+                  <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4">
+                    <p className="text-green-200 text-sm">Trial activated successfully! Check your email for login credentials.</p>
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={loading}
                   className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? (
+                  {loading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       <span>Activating Trial...</span>
