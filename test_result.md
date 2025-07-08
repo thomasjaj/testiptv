@@ -101,3 +101,119 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the StreamMax Pro backend API with the following endpoints: Health Check, Subscription Plans, Features, App Settings, Trial Signup, Reseller Application, and Error Handling."
+
+backend:
+  - task: "Health Check API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Health check endpoint is working correctly. Returns status 'healthy' and message 'StreamMax Pro API is running'."
+
+  - task: "Subscription Plans API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Subscription plans endpoint is working correctly. Returns a list of 4 plans with all required fields."
+
+  - task: "Features API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Features endpoint is working correctly. Returns a list of 6 active features with all required fields."
+
+  - task: "App Settings API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "App settings endpoint was failing with a 500 error due to MongoDB ObjectId not being JSON serializable."
+      - working: true
+        agent: "testing"
+        comment: "Fixed the issue by converting ObjectId to string in the response. Now returns app settings with hero data and all required fields."
+
+  - task: "Trial Signup API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Trial signup endpoint is working correctly. Successfully creates a new trial with a unique email and returns the expected response. Trial status endpoint also works correctly."
+
+  - task: "Reseller Application API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Reseller application endpoint is working correctly. Successfully creates a new application and returns the expected response. Listing all applications also works correctly."
+
+  - task: "Error Handling"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Error handling is working correctly. Returns 404 for non-existent endpoints and invalid trial emails, and 405 for invalid methods."
+
+frontend:
+  # No frontend tasks tested as per instructions
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Health Check API"
+    - "Subscription Plans API"
+    - "Features API"
+    - "App Settings API"
+    - "Trial Signup API"
+    - "Reseller Application API"
+    - "Error Handling"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: "I've tested all the backend API endpoints as requested. All endpoints are now working correctly. I found and fixed an issue with the App Settings API where MongoDB ObjectId was not being properly serialized to JSON. All tests are now passing."
