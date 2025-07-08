@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { useResellerApplication } from '../hooks/useApi';
 
 const Reseller = ({ reseller }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const Reseller = ({ reseller }) => {
     company: '',
     message: ''
   });
+  
+  const { submitApplication, loading, error, success } = useResellerApplication();
 
   const handleInputChange = (e) => {
     setFormData({
@@ -18,11 +21,17 @@ const Reseller = ({ reseller }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock form submission
-    alert(`Thank you ${formData.name}! Your reseller application has been submitted. We'll contact you soon!`);
-    setFormData({ name: '', email: '', company: '', message: '' });
+    
+    try {
+      const result = await submitApplication(formData);
+      alert(result.message);
+      setFormData({ name: '', email: '', company: '', message: '' });
+    } catch (err) {
+      console.error('Reseller application failed:', err);
+      // Error is already handled by the hook
+    }
   };
 
   return (
@@ -145,11 +154,33 @@ const Reseller = ({ reseller }) => {
                   />
                 </div>
 
+                {/* Error Message */}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p className="text-red-600 text-sm">{error}</p>
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {success && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <p className="text-green-600 text-sm">Application submitted successfully! We'll contact you within 24 hours.</p>
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {reseller.ctaText}
+                  {loading ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Submitting...</span>
+                    </div>
+                  ) : (
+                    reseller.ctaText
+                  )}
                 </Button>
               </form>
             </CardContent>
