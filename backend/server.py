@@ -8,7 +8,11 @@ from typing import List
 import secrets
 
 # Import models and database
-from .models import (
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from models import (
     SubscriptionPlan, SubscriptionPlanCreate,
     Feature, FeatureCreate,
     TrialSignup, TrialSignupCreate, TrialSignupResponse,
@@ -16,7 +20,7 @@ from .models import (
     ContactMessage, ContactMessageCreate, ContactMessageResponse,
     AppSettings
 )
-from .database import (
+from database import (
     db, init_default_data, close_db_connection,
     subscription_plans_collection,
     features_collection,
